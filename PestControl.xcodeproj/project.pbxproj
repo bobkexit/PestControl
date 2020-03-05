@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		35B80DCF2411024500B35F2D /* TileSets.sks in Resources */ = {isa = PBXBuildFile; fileRef = 35B80DCE2411024500B35F2D /* TileSets.sks */; };
 		824441731D3C5E8F005ECB76 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824441721D3C5E8F005ECB76 /* AppDelegate.swift */; };
 		824441751D3C5E8F005ECB76 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 824441741D3C5E8F005ECB76 /* GameScene.sks */; };
 		824441791D3C5E8F005ECB76 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824441781D3C5E8F005ECB76 /* GameScene.swift */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		35B80DCE2411024500B35F2D /* TileSets.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TileSets.sks; sourceTree = "<group>"; };
 		8244416F1D3C5E8F005ECB76 /* PestControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PestControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		824441721D3C5E8F005ECB76 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		824441741D3C5E8F005ECB76 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				824441721D3C5E8F005ECB76 /* AppDelegate.swift */,
 				8244417A1D3C5E8F005ECB76 /* GameViewController.swift */,
 				824441741D3C5E8F005ECB76 /* GameScene.sks */,
+				35B80DCE2411024500B35F2D /* TileSets.sks */,
 				824441781D3C5E8F005ECB76 /* GameScene.swift */,
 				8244417F1D3C5E8F005ECB76 /* Assets.xcassets */,
 				8244418A1D3C5FE1005ECB76 /* Storyboards */,
@@ -185,6 +188,7 @@
 			files = (
 				8244417E1D3C5E8F005ECB76 /* Main.storyboard in Resources */,
 				824441751D3C5E8F005ECB76 /* GameScene.sks in Resources */,
+				35B80DCF2411024500B35F2D /* TileSets.sks in Resources */,
 				824441801D3C5E8F005ECB76 /* Assets.xcassets in Resources */,
 				824441831D3C5E8F005ECB76 /* LaunchScreen.storyboard in Resources */,
 			);
