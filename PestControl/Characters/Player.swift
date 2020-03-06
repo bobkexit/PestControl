@@ -14,8 +14,10 @@ enum PlayerSettings {
 
 class Player: SKSpriteNode {
   
+  var animations: [SKAction] = []
+  
   init() {
-    let texture = SKTexture(imageNamed: "player_ft1")
+    let texture = SKTexture(pixelImageNamed: "player_ft1")
     super.init(texture: texture, color: .white, size: texture.size())
     name = "Player"
     zPosition = 50
@@ -24,6 +26,7 @@ class Player: SKSpriteNode {
     physicsBody?.linearDamping = 0.5
     physicsBody?.friction = 0
     physicsBody?.allowsRotation = false
+    createAnimation(character: "player")
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -35,5 +38,24 @@ class Player: SKSpriteNode {
     
     let newVelocity = (target - position).normalized() * PlayerSettings.playerSpeed
     physicsBody.velocity = CGVector(point: newVelocity)
+    
+    checkDiraction()
+  }
+  
+  func checkDiraction() {
+    guard let physicsBody = physicsBody else { return }
+    let diraction = animationDirection(for: physicsBody.velocity)
+    
+    if diraction == .left {
+      xScale = abs(xScale)
+    }
+    
+    if diraction == .right {
+      xScale = -abs(xScale)
+    }
+    
+    run(animations[diraction.rawValue], withKey: "animation")
   }
 }
+
+extension Player: Animatable {}
