@@ -10,6 +10,7 @@
 		350508B724117E2C006AB1F1 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350508B624117E2C006AB1F1 /* Player.swift */; };
 		354087792412552000B30265 /* Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354087782412552000B30265 /* Type.swift */; };
 		3540877B2412555900B30265 /* Animatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540877A2412555900B30265 /* Animatable.swift */; };
+		35A04D21242202B70043B805 /* Bug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A04D20242202B70043B805 /* Bug.swift */; };
 		35B80DCF2411024500B35F2D /* TileSets.sks in Resources */ = {isa = PBXBuildFile; fileRef = 35B80DCE2411024500B35F2D /* TileSets.sks */; };
 		824441731D3C5E8F005ECB76 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824441721D3C5E8F005ECB76 /* AppDelegate.swift */; };
 		824441751D3C5E8F005ECB76 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 824441741D3C5E8F005ECB76 /* GameScene.sks */; };
@@ -36,6 +37,7 @@
 		350508B624117E2C006AB1F1 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		354087782412552000B30265 /* Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Type.swift; sourceTree = "<group>"; };
 		3540877A2412555900B30265 /* Animatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animatable.swift; sourceTree = "<group>"; };
+		35A04D20242202B70043B805 /* Bug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bug.swift; sourceTree = "<group>"; };
 		35B80DCE2411024500B35F2D /* TileSets.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TileSets.sks; sourceTree = "<group>"; };
 		8244416F1D3C5E8F005ECB76 /* PestControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PestControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		824441721D3C5E8F005ECB76 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 			children = (
 				350508B624117E2C006AB1F1 /* Player.swift */,
 				3540877A2412555900B30265 /* Animatable.swift */,
+				35A04D20242202B70043B805 /* Bug.swift */,
 			);
 			path = Characters;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 			files = (
 				824441791D3C5E8F005ECB76 /* GameScene.swift in Sources */,
 				824441A41D3CA5A6005ECB76 /* CGPoint+Extensions.swift in Sources */,
+				35A04D21242202B70043B805 /* Bug.swift in Sources */,
 				824441AD1D3CA5A6005ECB76 /* SKTTimingFunctions.swift in Sources */,
 				354087792412552000B30265 /* Type.swift in Sources */,
 				824441AC1D3CA5A6005ECB76 /* SKTEffects.swift in Sources */,
