@@ -25,6 +25,7 @@ import SpriteKit
 class GameScene: SKScene {
   var background: SKTileMapNode!
   var player = Player()
+  var bugsNode = SKNode()
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -35,10 +36,7 @@ class GameScene: SKScene {
     addChild(player)
     setupCamera()
     setupWorldPhysics()
-    
-    let bug = Bug()
-    bug.position = CGPoint(x: 60, y: 0)
-    addChild(bug)
+    creatBugs()
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -67,5 +65,40 @@ class GameScene: SKScene {
   
   func setupWorldPhysics() {
     background.physicsBody = SKPhysicsBody(edgeLoopFrom: background.frame)
+    background.physicsBody?.categoryBitMask = PhysicsCategory.edge
+    physicsWorld.contactDelegate = self
   }
+  
+  func tile(in tileMap: SKTileMapNode, at coordinates: TileCoordinates) -> SKTileDefinition? {
+    return tileMap.tileDefinition(atColumn: coordinates.column, row: coordinates.row)
+  }
+  
+  func creatBugs() {
+    guard let bugsMap = childNode(withName: "bugs") as? SKTileMapNode else {
+      return
+    }
+    
+    for row in 0..<bugsMap.numberOfRows {
+      for column in 0..<bugsMap.numberOfColumns {
+        guard let title = tile(in: bugsMap, at: (column, row)) else {
+          continue
+        }
+        let bug = Bug()
+        bug.position = bugsMap.centerOfTile(atColumn: column, row: row)
+        bugsNode.addChild(bug)
+        bug.move()
+      }
+    }
+    bugsNode.name = "Bugs"
+    addChild(bugsNode)
+    bugsMap.removeFromParent()
+  }
+  
+  func remove(bug: Bug) {
+    bug.removeFromParent()
+  }
+}
+
+extension GameScene: SKPhysicsContactDelegate {
+  
 }

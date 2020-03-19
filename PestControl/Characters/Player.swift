@@ -26,6 +26,8 @@ class Player: SKSpriteNode {
     physicsBody?.linearDamping = 0.5
     physicsBody?.friction = 0
     physicsBody?.allowsRotation = false
+    physicsBody?.categoryBitMask = PhysicsCategory.player
+    physicsBody?.contactTestBitMask = PhysicsCategory.all
     createAnimation(character: "player")
   }
   
