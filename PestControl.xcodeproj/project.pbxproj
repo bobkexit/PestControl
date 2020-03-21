@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3502A14024261224000A99ED /* Firebug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3502A13F24261224000A99ED /* Firebug.swift */; };
 		350508B724117E2C006AB1F1 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350508B624117E2C006AB1F1 /* Player.swift */; };
 		354087792412552000B30265 /* Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354087782412552000B30265 /* Type.swift */; };
 		3540877B2412555900B30265 /* Animatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540877A2412555900B30265 /* Animatable.swift */; };
@@ -34,6 +35,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3502A13F24261224000A99ED /* Firebug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebug.swift; sourceTree = "<group>"; };
 		350508B624117E2C006AB1F1 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		354087782412552000B30265 /* Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Type.swift; sourceTree = "<group>"; };
 		3540877A2412555900B30265 /* Animatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animatable.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 				350508B624117E2C006AB1F1 /* Player.swift */,
 				3540877A2412555900B30265 /* Animatable.swift */,
 				35A04D20242202B70043B805 /* Bug.swift */,
+				3502A13F24261224000A99ED /* Firebug.swift */,
 			);
 			path = Characters;
 			sourceTree = "<group>";
@@ -229,6 +232,7 @@
 				824441AC1D3CA5A6005ECB76 /* SKTEffects.swift in Sources */,
 				350508B724117E2C006AB1F1 /* Player.swift in Sources */,
 				824441A81D3CA5A6005ECB76 /* SKAction+SpecialEffects.swift in Sources */,
+				3502A14024261224000A99ED /* Firebug.swift in Sources */,
 				824441A51D3CA5A6005ECB76 /* CGVector+Extensions.swift in Sources */,
 				824441A71D3CA5A6005ECB76 /* SKAction+Extensions.swift in Sources */,
 				824441A91D3CA5A6005ECB76 /* SKColor+Extensions.swift in Sources */,

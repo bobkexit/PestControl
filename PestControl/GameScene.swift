@@ -25,8 +25,10 @@ import SpriteKit
 class GameScene: SKScene {
   var background: SKTileMapNode!
   var obstaclesTileMap: SKTileMapNode?
+  var bugsprayTileMap: SKTileMapNode?
   var player = Player()
   var bugsNode = SKNode()
+  var firebugCount: Int = 0
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -40,6 +42,10 @@ class GameScene: SKScene {
     setupWorldPhysics()
     createBugs()
     setupObstaclePhysics()
+    
+    if firebugCount > 0 {
+      creatBugspay(quantity: firebugCount + 10)
+    }
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -86,7 +92,13 @@ class GameScene: SKScene {
         guard let title = tile(in: bugsMap, at: (column, row)) else {
           continue
         }
-        let bug = Bug()
+        let bug: Bug
+        if title.userData?.object(forKey: "firebug") != nil {
+          bug = Firebug()
+          firebugCount += 1
+        } else {
+          bug = Bug()
+        }
         bug.position = bugsMap.centerOfTile(atColumn: column, row: row)
         bugsNode.addChild(bug)
         bug.move()
@@ -119,6 +131,26 @@ class GameScene: SKScene {
     obstaclesTileMap.physicsBody = SKPhysicsBody(bodies: physicsBodies)
     obstaclesTileMap.physicsBody?.isDynamic = false
     obstaclesTileMap.physicsBody?.friction = 0
+  }
+  
+  func creatBugspay(quantity: Int) {
+    let texture = SKTexture(pixelImageNamed: "bugspray")
+    let tile = SKTileDefinition(texture: texture)
+    let tileRule = SKTileGroupRule(adjacency: .adjacencyAll, tileDefinitions: [tile])
+    let tileGroup = SKTileGroup(rules: [tileRule])
+    let tileSet = SKTileSet(tileGroups: [tileGroup])
+    
+    let columns = background.numberOfColumns
+    let rows = background.numberOfRows
+    bugsprayTileMap = SKTileMapNode(tileSet: tileSet, columns: columns, rows: rows, tileSize: tile.size)
+    
+    for _ in 1...quantity {
+      let column = Int.random(min: 0, max: columns-1)
+      let row = Int.random(min: 0, max: rows-1)
+      bugsprayTileMap?.setTileGroup(tileGroup, forColumn: column, row: row)
+    }
+    bugsprayTileMap?.name = "Bugspray"
+    addChild(bugsprayTileMap!)
   }
 }
 
