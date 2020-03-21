@@ -24,19 +24,22 @@ import SpriteKit
 
 class GameScene: SKScene {
   var background: SKTileMapNode!
+  var obstaclesTileMap: SKTileMapNode?
   var player = Player()
   var bugsNode = SKNode()
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     background = childNode(withName: "background") as? SKTileMapNode
+    obstaclesTileMap = childNode(withName: "obstacles") as? SKTileMapNode
   }
   
   override func didMove(to view: SKView) {
     addChild(player)
     setupCamera()
     setupWorldPhysics()
-    creatBugs()
+    createBugs()
+    setupObstaclePhysics()
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -73,7 +76,7 @@ class GameScene: SKScene {
     return tileMap.tileDefinition(atColumn: coordinates.column, row: coordinates.row)
   }
   
-  func creatBugs() {
+  func createBugs() {
     guard let bugsMap = childNode(withName: "bugs") as? SKTileMapNode else {
       return
     }
@@ -96,9 +99,44 @@ class GameScene: SKScene {
   
   func remove(bug: Bug) {
     bug.removeFromParent()
+    background.addChild(bug)
+    bug.die()
+  }
+  
+  func setupObstaclePhysics() {
+    guard let obstaclesTileMap = obstaclesTileMap else { return }
+    var physicsBodies = [SKPhysicsBody]()
+    for row in 0..<obstaclesTileMap.numberOfRows {
+      for column in 0..<obstaclesTileMap.numberOfColumns {
+        guard let tile = tile(in: obstaclesTileMap, at: (column, row)) else {
+          continue
+        }
+        let center = obstaclesTileMap.centerOfTile(atColumn: column, row: row)
+        let body = SKPhysicsBody(rectangleOf: tile.size, center: center)
+        physicsBodies.append(body)
+      }
+    }
+    obstaclesTileMap.physicsBody = SKPhysicsBody(bodies: physicsBodies)
+    obstaclesTileMap.physicsBody?.isDynamic = false
+    obstaclesTileMap.physicsBody?.friction = 0
   }
 }
 
 extension GameScene: SKPhysicsContactDelegate {
-  
+  func didBegin(_ contact: SKPhysicsContact) {
+    let other = contact.bodyA.categoryBitMask == PhysicsCategory.player
+      ? contact.bodyB : contact.bodyA
+    switch other.categoryBitMask {
+    case PhysicsCategory.bug:
+      if let bug = other.node as? Bug {
+        remove(bug: bug)
+      }
+    default:
+      break
+    }
+    
+    if let physicsBody = player.physicsBody, physicsBody.velocity.length() > 0 {
+      player.checkDiraction()
+    }
+  }
 }

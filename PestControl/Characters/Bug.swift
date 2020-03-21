@@ -51,6 +51,14 @@ class Bug: SKSpriteNode {
     run(animations[diraction.rawValue], withKey: "animation")
     run(.sequence([mobeBy, moveAgain]))
   }
+  
+  func die() {
+    removeAllActions()
+    texture = SKTexture(pixelImageNamed: "bug_lt1")
+    yScale = -1
+    physicsBody = nil
+    run(.sequence([.fadeOut(withDuration: 3), .removeFromParent()]))
+  }
 }
 
 extension Bug: Animatable {}
