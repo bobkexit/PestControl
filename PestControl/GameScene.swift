@@ -48,6 +48,13 @@ class GameScene: SKScene {
     }
   }
   
+  override func update(_ currentTime: TimeInterval) {
+    if !player.hasBugspray {
+      updateBugspray()
+    }
+    advanceBreakableTile(locatedAt: player.position)
+  }
+  
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard let touch = touches.first else { return }
     player.move(target: touch.location(in: self))
@@ -117,20 +124,23 @@ class GameScene: SKScene {
   
   func setupObstaclePhysics() {
     guard let obstaclesTileMap = obstaclesTileMap else { return }
-    var physicsBodies = [SKPhysicsBody]()
     for row in 0..<obstaclesTileMap.numberOfRows {
       for column in 0..<obstaclesTileMap.numberOfColumns {
         guard let tile = tile(in: obstaclesTileMap, at: (column, row)) else {
           continue
         }
-        let center = obstaclesTileMap.centerOfTile(atColumn: column, row: row)
-        let body = SKPhysicsBody(rectangleOf: tile.size, center: center)
-        physicsBodies.append(body)
+        guard tile.userData?.object(forKey: "obstacle") != nil else {
+          continue
+        }
+        let node = SKNode()
+        node.physicsBody = SKPhysicsBody(rectangleOf: tile.size)
+        node.physicsBody?.isDynamic = false
+        node.physicsBody?.friction = 0
+        node.physicsBody?.categoryBitMask = PhysicsCategory.breakable
+        node.position = obstaclesTileMap.centerOfTile(atColumn: column, row: row)
+        obstaclesTileMap.addChild(node)
       }
     }
-    obstaclesTileMap.physicsBody = SKPhysicsBody(bodies: physicsBodies)
-    obstaclesTileMap.physicsBody?.isDynamic = false
-    obstaclesTileMap.physicsBody?.friction = 0
   }
   
   func creatBugspay(quantity: Int) {
@@ -152,6 +162,39 @@ class GameScene: SKScene {
     bugsprayTileMap?.name = "Bugspray"
     addChild(bugsprayTileMap!)
   }
+  
+  func tileCoordinates(in tileMap: SKTileMapNode, at position: CGPoint) -> TileCoordinates {
+    let column = tileMap.tileColumnIndex(fromPosition: position)
+    let row = tileMap.tileRowIndex(fromPosition: position)
+    return (column, row)
+  }
+  
+  func updateBugspray() {
+    guard let bugsprayTileMap = bugsprayTileMap else { return }
+    let (column, row) = tileCoordinates(in: bugsprayTileMap, at: player.position)
+    if tile(in: bugsprayTileMap, at: (column, row)) != nil {
+      bugsprayTileMap.setTileGroup(nil, forColumn: column, row: row)
+      player.hasBugspray = true
+    }
+  }
+  
+  func tileGroupForName(tileSet: SKTileSet, name: String) -> SKTileGroup? {
+    let tileGroup = tileSet.tileGroups.filter { $0.name == name }.first
+    return tileGroup
+  }
+  
+  func advanceBreakableTile(locatedAt nodePosition: CGPoint) {
+    guard let obstaclesTileMap = obstaclesTileMap else { return }
+    let (column, row) = tileCoordinates(in: obstaclesTileMap, at: nodePosition)
+    let obstacle = tile(in: obstaclesTileMap, at: (column, row))
+    guard let nextTileGroupName = obstacle?.userData?.object(forKey: "breakable") as? String else {
+      return
+    }
+    if let nextTileGroupName = tileGroupForName(tileSet: obstaclesTileMap.tileSet,
+                                                name: nextTileGroupName) {
+      obstaclesTileMap.setTileGroup(nextTileGroupName, forColumn: column, row: row)
+    }
+  }
 }
 
 extension GameScene: SKPhysicsContactDelegate {
@@ -162,6 +205,16 @@ extension GameScene: SKPhysicsContactDelegate {
     case PhysicsCategory.bug:
       if let bug = other.node as? Bug {
         remove(bug: bug)
+      }
+    case PhysicsCategory.firebug:
+      if player.hasBugspray, let firebug = other.node as? Firebug {
+        remove(bug: firebug)
+        player.hasBugspray = false
+      }
+    case PhysicsCategory.breakable:
+      if let obstacleNode = other.node {
+        advanceBreakableTile(locatedAt: obstacleNode.position)
+        obstacleNode.removeFromParent()
       }
     default:
       break
