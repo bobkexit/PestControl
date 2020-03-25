@@ -18,3 +18,15 @@ extension SKTexture {
     self.filteringMode = .nearest
   }
 }
+
+typealias TileCoordinates = (column: Int, row: Int)
+
+struct PhysicsCategory {
+  static let none:      UInt32 = 0
+  static let all:       UInt32 = 0xFFFFFFFF
+  static let edge:      UInt32 = 0b1
+  static let player:    UInt32 = 0b10
+  static let bug:       UInt32 = 0b100
+  static let firebug:   UInt32 = 0b1000
+  static let breakable: UInt32 = 0b10000
+}
