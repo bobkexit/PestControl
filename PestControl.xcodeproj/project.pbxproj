@@ -11,6 +11,7 @@
 		350508B724117E2C006AB1F1 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350508B624117E2C006AB1F1 /* Player.swift */; };
 		354087792412552000B30265 /* Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354087782412552000B30265 /* Type.swift */; };
 		3540877B2412555900B30265 /* Animatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540877A2412555900B30265 /* Animatable.swift */; };
+		3586D3F3242B48C100AC1E3E /* HUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3586D3F2242B48C100AC1E3E /* HUD.swift */; };
 		35A04D21242202B70043B805 /* Bug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A04D20242202B70043B805 /* Bug.swift */; };
 		35B80DCF2411024500B35F2D /* TileSets.sks in Resources */ = {isa = PBXBuildFile; fileRef = 35B80DCE2411024500B35F2D /* TileSets.sks */; };
 		824441731D3C5E8F005ECB76 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824441721D3C5E8F005ECB76 /* AppDelegate.swift */; };
@@ -39,6 +40,7 @@
 		350508B624117E2C006AB1F1 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		354087782412552000B30265 /* Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Type.swift; sourceTree = "<group>"; };
 		3540877A2412555900B30265 /* Animatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animatable.swift; sourceTree = "<group>"; };
+		3586D3F2242B48C100AC1E3E /* HUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUD.swift; sourceTree = "<group>"; };
 		35A04D20242202B70043B805 /* Bug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bug.swift; sourceTree = "<group>"; };
 		35B80DCE2411024500B35F2D /* TileSets.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TileSets.sks; sourceTree = "<group>"; };
 		8244416F1D3C5E8F005ECB76 /* PestControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PestControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +117,7 @@
 				824441741D3C5E8F005ECB76 /* GameScene.sks */,
 				35B80DCE2411024500B35F2D /* TileSets.sks */,
 				824441781D3C5E8F005ECB76 /* GameScene.swift */,
+				3586D3F2242B48C100AC1E3E /* HUD.swift */,
 				8244417F1D3C5E8F005ECB76 /* Assets.xcassets */,
 				8244418A1D3C5FE1005ECB76 /* Storyboards */,
 				824441841D3C5E8F005ECB76 /* Info.plist */,
@@ -242,6 +245,7 @@
 				3540877B2412555900B30265 /* Animatable.swift in Sources */,
 				824441AB1D3CA5A6005ECB76 /* SKTAudio.swift in Sources */,
 				824441A31D3CA5A6005ECB76 /* CGFloat+Extensions.swift in Sources */,
+				3586D3F3242B48C100AC1E3E /* HUD.swift in Sources */,
 				824441AE1D3CA5A6005ECB76 /* Vector3.swift in Sources */,
 				824441731D3C5E8F005ECB76 /* AppDelegate.swift in Sources */,
 			);

@@ -29,6 +29,10 @@ class GameScene: SKScene {
   var player = Player()
   var bugsNode = SKNode()
   var firebugCount: Int = 0
+  var hud = HUD()
+  var timeLimit: Int = 10
+  var elapsedTime: Int = 0
+  var startTime: Int?
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -46,6 +50,8 @@ class GameScene: SKScene {
     if firebugCount > 0 {
       creatBugspay(quantity: firebugCount + 10)
     }
+    
+    setupHUD()
   }
   
   override func update(_ currentTime: TimeInterval) {
@@ -53,6 +59,7 @@ class GameScene: SKScene {
       updateBugspray()
     }
     advanceBreakableTile(locatedAt: player.position)
+    updateHUD(currentTime: currentTime)
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -194,6 +201,20 @@ class GameScene: SKScene {
                                                 name: nextTileGroupName) {
       obstaclesTileMap.setTileGroup(nextTileGroupName, forColumn: column, row: row)
     }
+  }
+  
+  func setupHUD() {
+    camera?.addChild(hud)
+    hud.addTimer(time: timeLimit)
+  }
+  
+  func updateHUD(currentTime: TimeInterval) {
+    if let startTime = startTime {
+      elapsedTime = Int(currentTime) - startTime
+    } else {
+      startTime = Int(currentTime) - elapsedTime
+    }
+    hud.updateTimer(time: timeLimit - elapsedTime)
   }
 }
 
