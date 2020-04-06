@@ -33,6 +33,11 @@ class GameScene: SKScene {
   var timeLimit: Int = 10
   var elapsedTime: Int = 0
   var startTime: Int?
+  var gameState: GameState = .initial {
+    didSet {
+      hud.updateGameState(from: oldValue, to: gameState)
+    }
+  }
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -60,6 +65,7 @@ class GameScene: SKScene {
     }
     advanceBreakableTile(locatedAt: player.position)
     updateHUD(currentTime: currentTime)
+    checkEndGame()
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -215,6 +221,16 @@ class GameScene: SKScene {
       startTime = Int(currentTime) - elapsedTime
     }
     hud.updateTimer(time: timeLimit - elapsedTime)
+  }
+  
+  func checkEndGame() {
+    if bugsNode.children.count == 0 {
+      player.physicsBody?.linearDamping = 1
+      gameState = .win
+    } else if timeLimit - elapsedTime <= 0 {
+      player.physicsBody?.linearDamping = 1
+      gameState = .lose
+    }
   }
 }
 
