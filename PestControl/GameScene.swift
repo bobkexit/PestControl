@@ -23,6 +23,7 @@
 import SpriteKit
 
 class GameScene: SKScene {
+  var currentLevel: Int = 1
   var background: SKTileMapNode!
   var obstaclesTileMap: SKTileMapNode?
   var bugsprayTileMap: SKTileMapNode?
@@ -43,6 +44,10 @@ class GameScene: SKScene {
     super.init(coder: aDecoder)
     background = childNode(withName: "background") as? SKTileMapNode
     obstaclesTileMap = childNode(withName: "obstacles") as? SKTileMapNode
+    if let timeLimit = userData?.object(forKey: "timeLimit") as? Int {
+      self.timeLimit = timeLimit
+    }
+    addObservers()
   }
   
   override func didMove(to view: SKView) {
@@ -57,9 +62,16 @@ class GameScene: SKScene {
     }
     
     setupHUD()
+    
+    gameState = .start
   }
   
   override func update(_ currentTime: TimeInterval) {
+    if gameState != .play {
+      isPaused = true
+      return
+    }
+    
     if !player.hasBugspray {
       updateBugspray()
     }
@@ -70,7 +82,33 @@ class GameScene: SKScene {
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard let touch = touches.first else { return }
-    player.move(target: touch.location(in: self))
+    
+    switch gameState {
+    case .start:
+      gameState = .play
+      isPaused = false
+      startTime = nil
+      elapsedTime = 0
+    case .reload:
+      if let touchedNode = atPoint(touch.location(in: self)) as? SKLabelNode {
+        if touchedNode.name == HUDMessages.yes {
+          isPaused = false
+          startTime = nil
+          gameState = .play
+        } else if touchedNode.name == HUDMessages.no {
+          transitionToScene(level: 1)
+        }
+      }
+    case .play:
+      player.move(target: touch.location(in: self))
+    case .win:
+      transitionToScene(level: currentLevel + 1)
+    case .lose:
+      transitionToScene(level: 1)
+    default:
+      break
+    }
+    
   }
   
   func setupCamera() {
@@ -232,6 +270,14 @@ class GameScene: SKScene {
       gameState = .lose
     }
   }
+  
+  func transitionToScene(level: Int) {
+    guard let newScene = SKScene(fileNamed: "Level\(level)") as? GameScene else {
+      fatalError("Level\(level) not found")
+    }
+    newScene.currentLevel = level
+    view?.presentScene(newScene, transition: .flipVertical(withDuration: 0.5))
+  }
 }
 
 extension GameScene: SKPhysicsContactDelegate {
@@ -259,6 +305,45 @@ extension GameScene: SKPhysicsContactDelegate {
     
     if let physicsBody = player.physicsBody, physicsBody.velocity.length() > 0 {
       player.checkDiraction()
+    }
+  }
+}
+
+extension GameScene {
+  func applicationDidBecomeActive() {
+    if gameState == .pause {
+      gameState = .reload
+    }
+  }
+  
+  func applicationWillResignActive() {
+    if gameState != .lose {
+      gameState = .pause
+    }
+  }
+  
+  func applicationDidEnterBackground() {
+    print("* \(#function)")
+  }
+  
+  func addObservers() {
+    let notificationCeneter = NotificationCenter.default
+    notificationCeneter.addObserver(forName: UIApplication.didBecomeActiveNotification,
+                                    object: nil,
+                                    queue: nil) { [weak self] _ in
+                                      self?.applicationDidBecomeActive()
+    }
+    
+    notificationCeneter.addObserver(forName: UIApplication.willResignActiveNotification,
+                                    object: nil,
+                                    queue: nil) { [weak self] _ in
+                                      self?.applicationWillResignActive()
+    }
+    
+    notificationCeneter.addObserver(forName: UIApplication.didEnterBackgroundNotification,
+                                    object: nil,
+                                    queue: nil) { [weak self] _ in
+                                      self?.applicationDidEnterBackground()
     }
   }
 }

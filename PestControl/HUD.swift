@@ -77,6 +77,12 @@ class HUD: SKNode {
   
   private func updateUI(gameState: GameState) {
     switch gameState {
+    case .start:
+      add(message: HUDMessages.tapToStart, position: .zero)
+    case .reload:
+      add(message: HUDMessages.reload, position: .zero, fontSize: 40)
+      add(message: HUDMessages.yes, position: CGPoint(x: -140, y: -100))
+      add(message: HUDMessages.no, position: CGPoint(x: 130, y: -100))
     case .win:
       add(message: HUDMessages.win, position: .zero)
       add(message: HUDMessages.nextLevel, position: CGPoint(x: 0, y: -100))
@@ -90,6 +96,12 @@ class HUD: SKNode {
   
   private func clearUI(gameState: GameState) {
     switch gameState {
+    case .start:
+      remove(message: HUDMessages.tapToStart)
+    case .reload:
+      remove(message: HUDMessages.reload)
+      remove(message: HUDMessages.yes)
+      remove(message: HUDMessages.no)
     case .win:
       remove(message: HUDMessages.win)
       remove(message: HUDMessages.nextLevel)

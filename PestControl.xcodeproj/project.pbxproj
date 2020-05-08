@@ -11,6 +11,9 @@
 		350508B724117E2C006AB1F1 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350508B624117E2C006AB1F1 /* Player.swift */; };
 		354087792412552000B30265 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354087782412552000B30265 /* Types.swift */; };
 		3540877B2412555900B30265 /* Animatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540877A2412555900B30265 /* Animatable.swift */; };
+		356E33B5246539D300A51170 /* Level1.sks in Resources */ = {isa = PBXBuildFile; fileRef = 356E33B2246539D300A51170 /* Level1.sks */; };
+		356E33B6246539D300A51170 /* Level3.sks in Resources */ = {isa = PBXBuildFile; fileRef = 356E33B3246539D300A51170 /* Level3.sks */; };
+		356E33B7246539D300A51170 /* Level2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 356E33B4246539D300A51170 /* Level2.sks */; };
 		3586D3F3242B48C100AC1E3E /* HUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3586D3F2242B48C100AC1E3E /* HUD.swift */; };
 		35A04D21242202B70043B805 /* Bug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A04D20242202B70043B805 /* Bug.swift */; };
 		35B80DCF2411024500B35F2D /* TileSets.sks in Resources */ = {isa = PBXBuildFile; fileRef = 35B80DCE2411024500B35F2D /* TileSets.sks */; };
@@ -40,6 +43,9 @@
 		350508B624117E2C006AB1F1 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		354087782412552000B30265 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
 		3540877A2412555900B30265 /* Animatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animatable.swift; sourceTree = "<group>"; };
+		356E33B2246539D300A51170 /* Level1.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level1.sks; sourceTree = "<group>"; };
+		356E33B3246539D300A51170 /* Level3.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level3.sks; sourceTree = "<group>"; };
+		356E33B4246539D300A51170 /* Level2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level2.sks; sourceTree = "<group>"; };
 		3586D3F2242B48C100AC1E3E /* HUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUD.swift; sourceTree = "<group>"; };
 		35A04D20242202B70043B805 /* Bug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bug.swift; sourceTree = "<group>"; };
 		35B80DCE2411024500B35F2D /* TileSets.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TileSets.sks; sourceTree = "<group>"; };
@@ -88,6 +94,17 @@
 			path = Characters;
 			sourceTree = "<group>";
 		};
+		356E33B824653A0800A51170 /* Levels */ = {
+			isa = PBXGroup;
+			children = (
+				824441741D3C5E8F005ECB76 /* GameScene.sks */,
+				356E33B2246539D300A51170 /* Level1.sks */,
+				356E33B4246539D300A51170 /* Level2.sks */,
+				356E33B3246539D300A51170 /* Level3.sks */,
+			);
+			path = Levels;
+			sourceTree = "<group>";
+		};
 		824441661D3C5E8F005ECB76 = {
 			isa = PBXGroup;
 			children = (
@@ -110,11 +127,11 @@
 			isa = PBXGroup;
 			children = (
 				824441961D3CA5A6005ECB76 /* SKTUtils */,
+				356E33B824653A0800A51170 /* Levels */,
 				350508B524117E17006AB1F1 /* Characters */,
 				824441721D3C5E8F005ECB76 /* AppDelegate.swift */,
 				354087782412552000B30265 /* Types.swift */,
 				8244417A1D3C5E8F005ECB76 /* GameViewController.swift */,
-				824441741D3C5E8F005ECB76 /* GameScene.sks */,
 				35B80DCE2411024500B35F2D /* TileSets.sks */,
 				824441781D3C5E8F005ECB76 /* GameScene.swift */,
 				3586D3F2242B48C100AC1E3E /* HUD.swift */,
@@ -214,7 +231,10 @@
 			files = (
 				8244417E1D3C5E8F005ECB76 /* Main.storyboard in Resources */,
 				824441751D3C5E8F005ECB76 /* GameScene.sks in Resources */,
+				356E33B5246539D300A51170 /* Level1.sks in Resources */,
+				356E33B7246539D300A51170 /* Level2.sks in Resources */,
 				35B80DCF2411024500B35F2D /* TileSets.sks in Resources */,
+				356E33B6246539D300A51170 /* Level3.sks in Resources */,
 				824441801D3C5E8F005ECB76 /* Assets.xcassets in Resources */,
 				824441831D3C5E8F005ECB76 /* LaunchScreen.storyboard in Resources */,
 			);
