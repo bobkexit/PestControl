@@ -34,6 +34,7 @@ class HUD: SKNode {
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
+    timerLabel = childNode(withName: "Timer") as? SKLabelNode
   }
   
   func add(message: String,

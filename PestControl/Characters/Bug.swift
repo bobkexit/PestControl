@@ -27,10 +27,16 @@ class Bug: SKSpriteNode {
   }
   
   required init?(coder aDecoder: NSCoder) {
-     fatalError("Use init()")
+    super.init(coder: aDecoder)
+    animations = aDecoder.decodeObject(forKey: "Bug.animations") as! [SKAction]
   }
   
-  func move() {
+  override func encode(with coder: NSCoder) {
+    coder.encode(animations, forKey: "Bug.animations")
+    super.encode(with: coder)
+  }
+  
+  @objc func moveBug() {
     let randomX = CGFloat(Int.random(min: -1, max: 1))
     let randomY = CGFloat(Int.random(min: -1, max: 1))
     
@@ -38,7 +44,7 @@ class Bug: SKSpriteNode {
                           dy: randomY * BugSettings.bugDistance)
     
     let mobeBy = SKAction.move(by: vector, duration: 1)
-    let moveAgain = SKAction.run(move)
+    let moveAgain = SKAction.perform(#selector(moveBug), onTarget: self)
     
     let diraction = animationDirection(for: vector)
     
