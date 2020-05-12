@@ -50,15 +50,24 @@ class GameScene: SKScene {
     
     let savedGameState = aDecoder.decodeInteger(forKey: "Scene.gameState")
     
-    if let gameState = GameState(rawValue: savedGameState) {
+    if let gameState = GameState(rawValue: savedGameState), gameState == .pause {
       self.gameState = gameState
       firebugCount = aDecoder.decodeInteger(forKey: "Scene.firebugCount")
       elapsedTime = aDecoder.decodeInteger(forKey: "Scene.elapsedTime")
       currentLevel = aDecoder.decodeInteger(forKey: "Scene.currentLevel")
       
-      player = childNode(withName: "Player") as! Player
-      hud = camera!.childNode(withName: "HUD") as! HUD
-      bugsNode = childNode(withName: "Bugs")!
+      if let player = childNode(withName: "Player") as? Player {
+        self.player = player
+      }
+     
+      if let hud = camera?.childNode(withName: "HUD") as? HUD {
+        self.hud = hud
+      }
+      
+      if let bugsNode = childNode(withName: "Bugs") {
+        self.bugsNode = bugsNode
+      }
+
       bugsprayTileMap = childNode(withName: "Bugspray") as? SKTileMapNode
     }
     
@@ -194,6 +203,7 @@ class GameScene: SKScene {
     bug.removeFromParent()
     background.addChild(bug)
     bug.die()
+    hud.updateBugs(count: bugsNode.children.count)
   }
   
   func setupObstaclePhysics() {
@@ -273,6 +283,7 @@ class GameScene: SKScene {
   func setupHUD() {
     camera?.addChild(hud)
     hud.addTimer(time: timeLimit)
+    hud.addBugCount(count: bugsNode.children.count)
   }
   
   func updateHUD(currentTime: TimeInterval) {
@@ -402,17 +413,22 @@ extension GameScene {
     
     var scene: SKScene?
     
-    let filemanager = FileManager.default
+    let fileManager = FileManager.default
     
-    guard let directory = filemanager.urls(for: .libraryDirectory, in: .userDomainMask).first else {
+    guard let directory = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first else {
       return nil
     }
     
     let url = directory.appendingPathComponent("SavedGames/saved-game")
     
-    if filemanager.fileExists(atPath: url.path) {
+    if fileManager.fileExists(atPath: url.path) {
       scene = NSKeyedUnarchiver.unarchiveObject(withFile: url.path) as? GameScene
-      _ = try? filemanager.removeItem(at: url)
+      
+      do {
+        try fileManager.removeItem(atPath: url.path)
+      } catch let error as NSError {
+        fatalError("Failed to remove saved game: \(error.debugDescription)")
+      }
     }
     
     return scene
