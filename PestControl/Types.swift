@@ -30,3 +30,7 @@ struct PhysicsCategory {
   static let firebug:   UInt32 = 0b1000
   static let breakable: UInt32 = 0b10000
 }
+
+enum GameState: Int {
+  case initial = 0, start, play, win, lose, reload, pause
+}

@@ -23,41 +23,124 @@
 import SpriteKit
 
 class GameScene: SKScene {
+  var currentLevel: Int = 1
   var background: SKTileMapNode!
   var obstaclesTileMap: SKTileMapNode?
   var bugsprayTileMap: SKTileMapNode?
   var player = Player()
   var bugsNode = SKNode()
   var firebugCount: Int = 0
+  var hud = HUD()
+  var timeLimit: Int = 10
+  var elapsedTime: Int = 0
+  var startTime: Int?
+  var gameState: GameState = .initial {
+    didSet {
+      hud.updateGameState(from: oldValue, to: gameState)
+    }
+  }
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     background = childNode(withName: "background") as? SKTileMapNode
     obstaclesTileMap = childNode(withName: "obstacles") as? SKTileMapNode
+    if let timeLimit = userData?.object(forKey: "timeLimit") as? Int {
+      self.timeLimit = timeLimit
+    }
+    
+    let savedGameState = aDecoder.decodeInteger(forKey: "Scene.gameState")
+    
+    if let gameState = GameState(rawValue: savedGameState), gameState == .pause {
+      self.gameState = gameState
+      firebugCount = aDecoder.decodeInteger(forKey: "Scene.firebugCount")
+      elapsedTime = aDecoder.decodeInteger(forKey: "Scene.elapsedTime")
+      currentLevel = aDecoder.decodeInteger(forKey: "Scene.currentLevel")
+      
+      if let player = childNode(withName: "Player") as? Player {
+        self.player = player
+      }
+     
+      if let hud = camera?.childNode(withName: "HUD") as? HUD {
+        self.hud = hud
+      }
+      
+      if let bugsNode = childNode(withName: "Bugs") {
+        self.bugsNode = bugsNode
+      }
+
+      bugsprayTileMap = childNode(withName: "Bugspray") as? SKTileMapNode
+    }
+    
+    addObservers()
+  }
+  
+  override func encode(with coder: NSCoder) {
+    coder.encode(firebugCount, forKey: "Scene.firebugCount")
+    coder.encode(elapsedTime, forKey: "Scene.elapsedTime")
+    coder.encode(gameState.rawValue, forKey: "Scene.gameState")
+    coder.encode(currentLevel, forKey: "Scene.currentLevel")
+    
+    super.encode(with: coder)
   }
   
   override func didMove(to view: SKView) {
-    addChild(player)
-    setupCamera()
-    setupWorldPhysics()
-    createBugs()
-    setupObstaclePhysics()
-    
-    if firebugCount > 0 {
-      creatBugspay(quantity: firebugCount + 10)
+    if gameState == .initial {
+      addChild(player)
+      setupWorldPhysics()
+      createBugs()
+      setupObstaclePhysics()
+      if firebugCount > 0 {
+        creatBugspay(quantity: firebugCount + 10)
+      }
+      setupHUD()
+      gameState = .start
     }
+    setupCamera()
   }
   
   override func update(_ currentTime: TimeInterval) {
+    if gameState != .play {
+      isPaused = true
+      return
+    }
+    
     if !player.hasBugspray {
       updateBugspray()
     }
     advanceBreakableTile(locatedAt: player.position)
+    updateHUD(currentTime: currentTime)
+    checkEndGame()
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard let touch = touches.first else { return }
-    player.move(target: touch.location(in: self))
+    
+    switch gameState {
+    case .start:
+      gameState = .play
+      isPaused = false
+      startTime = nil
+      elapsedTime = 0
+    case .reload:
+      if let touchedNode = atPoint(touch.location(in: self)) as? SKLabelNode {
+        if touchedNode.name == HUDMessages.yes {
+          isPaused = false
+          startTime = nil
+          gameState = .play
+        } else if touchedNode.name == HUDMessages.no {
+          transitionToScene(level: 1)
+        }
+      }
+    case .play:
+      player.move(target: touch.location(in: self))
+    case .win:
+      transitionToScene(level: currentLevel + 1)
+    case .lose:
+      transitionToScene(level: 1)
+    default:
+      break
+    }
+    
   }
   
   func setupCamera() {
@@ -108,7 +191,7 @@ class GameScene: SKScene {
         }
         bug.position = bugsMap.centerOfTile(atColumn: column, row: row)
         bugsNode.addChild(bug)
-        bug.move()
+        bug.moveBug()
       }
     }
     bugsNode.name = "Bugs"
@@ -120,6 +203,7 @@ class GameScene: SKScene {
     bug.removeFromParent()
     background.addChild(bug)
     bug.die()
+    hud.updateBugs(count: bugsNode.children.count)
   }
   
   func setupObstaclePhysics() {
@@ -195,6 +279,39 @@ class GameScene: SKScene {
       obstaclesTileMap.setTileGroup(nextTileGroupName, forColumn: column, row: row)
     }
   }
+  
+  func setupHUD() {
+    camera?.addChild(hud)
+    hud.addTimer(time: timeLimit)
+    hud.addBugCount(count: bugsNode.children.count)
+  }
+  
+  func updateHUD(currentTime: TimeInterval) {
+    if let startTime = startTime {
+      elapsedTime = Int(currentTime) - startTime
+    } else {
+      startTime = Int(currentTime) - elapsedTime
+    }
+    hud.updateTimer(time: timeLimit - elapsedTime)
+  }
+  
+  func checkEndGame() {
+    if bugsNode.children.count == 0 {
+      player.physicsBody?.linearDamping = 1
+      gameState = .win
+    } else if timeLimit - elapsedTime <= 0 {
+      player.physicsBody?.linearDamping = 1
+      gameState = .lose
+    }
+  }
+  
+  func transitionToScene(level: Int) {
+    guard let newScene = SKScene(fileNamed: "Level\(level)") as? GameScene else {
+      fatalError("Level\(level) not found")
+    }
+    newScene.currentLevel = level
+    view?.presentScene(newScene, transition: .flipVertical(withDuration: 0.5))
+  }
 }
 
 extension GameScene: SKPhysicsContactDelegate {
@@ -223,5 +340,97 @@ extension GameScene: SKPhysicsContactDelegate {
     if let physicsBody = player.physicsBody, physicsBody.velocity.length() > 0 {
       player.checkDiraction()
     }
+  }
+}
+
+extension GameScene {
+  func applicationDidBecomeActive() {
+    if gameState == .pause {
+      gameState = .reload
+    }
+  }
+  
+  func applicationWillResignActive() {
+    if gameState != .lose {
+      gameState = .pause
+    }
+  }
+  
+  func applicationDidEnterBackground() {
+    if gameState != .lose {
+      saveGame()
+    }
+  }
+  
+  func addObservers() {
+    let notificationCeneter = NotificationCenter.default
+    notificationCeneter.addObserver(forName: UIApplication.didBecomeActiveNotification,
+                                    object: nil,
+                                    queue: nil) { [weak self] _ in
+                                      self?.applicationDidBecomeActive()
+    }
+    
+    notificationCeneter.addObserver(forName: UIApplication.willResignActiveNotification,
+                                    object: nil,
+                                    queue: nil) { [weak self] _ in
+                                      self?.applicationWillResignActive()
+    }
+    
+    notificationCeneter.addObserver(forName: UIApplication.didEnterBackgroundNotification,
+                                    object: nil,
+                                    queue: nil) { [weak self] _ in
+                                      self?.applicationDidEnterBackground()
+    }
+  }
+}
+
+extension GameScene {
+  func saveGame() {
+    let fileManager = FileManager.default
+    guard let directory = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first else {
+      return
+    }
+    
+    let saveURL = directory.appendingPathComponent("SavedGames")
+    
+    do {
+      try fileManager.createDirectory(atPath: saveURL.path,
+                                      withIntermediateDirectories: true,
+                                      attributes: nil)
+    } catch let error as NSError {
+      fatalError("Failed to create directory: \(error.debugDescription)")
+    }
+    
+    let fileURL = saveURL.appendingPathComponent("saved-game")
+    
+    print("* saving \(fileURL.path)")
+    
+    NSKeyedArchiver.archiveRootObject(self, toFile: fileURL.path)
+  }
+  
+  class func loadGame() -> SKScene? {
+    print("* loading game")
+    
+    var scene: SKScene?
+    
+    let fileManager = FileManager.default
+    
+    guard let directory = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first else {
+      return nil
+    }
+    
+    let url = directory.appendingPathComponent("SavedGames/saved-game")
+    
+    if fileManager.fileExists(atPath: url.path) {
+      scene = NSKeyedUnarchiver.unarchiveObject(withFile: url.path) as? GameScene
+      
+      do {
+        try fileManager.removeItem(atPath: url.path)
+      } catch let error as NSError {
+        fatalError("Failed to remove saved game: \(error.debugDescription)")
+      }
+    }
+    
+    return scene
   }
 }

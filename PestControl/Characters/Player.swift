@@ -37,7 +37,20 @@ class Player: SKSpriteNode {
   }
   
   required init?(coder aDecoder: NSCoder) {
-    fatalError("Use init()")
+    super.init(coder: aDecoder)
+    animations = aDecoder.decodeObject(forKey: "Player.animations") as! [SKAction]
+    hasBugspray = aDecoder.decodeBool(forKey: "Player.hasBugspray")
+    if hasBugspray {
+      removeAction(forKey: "blink")
+      blink(color: .green, on: hasBugspray)
+    }
+  }
+  
+  override func encode(with coder: NSCoder) {
+    coder.encode(hasBugspray, forKey: "Player.hasBugspray")
+    coder.encode(animations, forKey: "Player.animations")
+    
+    super.encode(with: coder)
   }
   
   func move(target: CGPoint) {
